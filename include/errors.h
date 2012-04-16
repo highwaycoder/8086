@@ -35,7 +35,7 @@ enum ERRORS {
 	// misc
 	EBADOPCODE 		 = 0xBD0C,
 	
-	// errors we can foresee
+	// foreseeable errors in our emulator
 	EUNIMPLEMENTED   = 0xEE01,
 };
 

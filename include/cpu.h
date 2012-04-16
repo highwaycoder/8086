@@ -6,6 +6,11 @@
 #define MEMORY_SIZE (1024*1024) // maximum addressable memory is 1MiB
 #define MAX_MEMORY (MEMORY_SIZE-1) // highest addressable point
 
+typedef enum POWER {
+	ON,
+	OFF
+} power_t;
+
 typedef union ACCUMULATOR {		
 	uint16_t full;
 	
@@ -39,8 +44,8 @@ typedef struct CPU {
 	uint16_t es;
 	uint16_t ss;
 	
-	// instruction pointer
-	uint16_t ip;
+	// instruction pointer (implemented as a native pointer for shits)
+	uint8_t* ip;
 	
 	// pointer to the start of memory (nothing should alter this pointer - if they do, we're in trouble.)
 	uint8_t* memory_start;
@@ -48,10 +53,13 @@ typedef struct CPU {
 	// cpu error number for debugging purposes
 	uint16_t errno;
 	
+	// power button, useful for shutting down safely
+	power_t power;
 } cpu_t;
 
 // functions
 cpu_t* new_cpu(void);
+void load_memory(cpu_t* cpu,FILE* ramfile);
 void free_cpu(cpu_t* cpu);
 void run(cpu_t* cpu);
 void step(cpu_t* cpu);

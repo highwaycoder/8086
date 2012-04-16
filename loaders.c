@@ -1,11 +1,9 @@
+#include <stdio.h>
 #include "include/cpu.h"
 #include "include/instruction.h"
 #include "include/loaders.h"
 
-void mov(cpu_t* cpu,instruction_t instruction)
+void mov(cpu_t* cpu)
 {
-	if(instruction.address_mode.mod == 0)
-	{
-		
-	}
+	
 }

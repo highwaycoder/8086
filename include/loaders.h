@@ -1,7 +1,7 @@
 #ifndef LOADERS_H
 #define LOADERS_H
 
-void mov(cpu_t* cpu,instruction_t instruction);
+void mov(cpu_t* cpu);
 void mov_reg16_imm(acc_t* dest,uint16_t src);
 void mov_regLO_imm(acc_t* dest,uint8_t src);
 void mov_regHO_imm(acc_t* dest,uint8_t src);
