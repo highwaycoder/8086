@@ -59,7 +59,7 @@ typedef struct CPU {
 
 // functions
 cpu_t* new_cpu(void);
-void load_memory(cpu_t* cpu,FILE* ramfile);
+int load_memory(cpu_t* cpu,FILE* ramfile);
 void free_cpu(cpu_t* cpu);
 void run(cpu_t* cpu);
 void step(cpu_t* cpu);
