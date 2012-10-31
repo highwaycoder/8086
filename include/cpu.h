@@ -1,29 +1,27 @@
 #ifndef CPU_H
 #define CPU_H
 #include <stdint.h>
+#include <stdio.h> // for FILE*
 
 // configuration constants
 #define MEMORY_SIZE (1024*1024) // maximum addressable memory is 1MiB
 #define MAX_MEMORY (MEMORY_SIZE-1) // highest addressable point
+
+// useful macro for accessing hi/lo accumulator bytes
+#define ACC_HI(x) (x >> 8)
+#define ACC_LO(x) (x & 0xFF)
 
 typedef enum POWER {
 	ON,
 	OFF
 } power_t;
 
-typedef union ACCUMULATOR {		
-	uint16_t full;
-	
-	struct {
-		uint8_t h;
-		uint8_t l;
-	};
-
-} acc_t;
+// fuck unions, let's just use a uint16_t for simplicity's sake
+typedef uint16_t acc_t;
 
 
 typedef struct CPU {
-	// accumulators (accessed with, for example, ax or ax.h / ax.l)
+	// accumulators
 	acc_t ax;
 	acc_t bx;
 	acc_t cx;
@@ -44,11 +42,11 @@ typedef struct CPU {
 	uint16_t es;
 	uint16_t ss;
 	
-	// instruction pointer (implemented as a native pointer for shits)
-	uint8_t* ip;
+	// instruction pointer, maximum amount of memory 
+	uint8_t ip;
 	
-	// pointer to the start of memory (nothing should alter this pointer - if they do, we're in trouble.)
-	uint8_t* memory_start;
+	// memory is now implemented as an array to protect it (does hurt the stack a bit though)
+	uint8_t memory[MEMORY_SIZE];
 	
 	// cpu error number for debugging purposes
 	uint16_t errno;
@@ -65,6 +63,6 @@ void run(cpu_t* cpu);
 void step(cpu_t* cpu);
 void dump_core(cpu_t cpu);
 void dump_state(cpu_t cpu);
-void err2str(uint16_t errnum);
+char* err2str(uint16_t errnum);
 
 #endif

@@ -2,9 +2,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "include/cpu.h"
-#include "include/loaders.h"
-#include "include/errors.h"
+#include "cpu.h"
+#include "loaders.h"
+#include "errors.h"
+#include "bitwise.h"
 
 cpu_t* new_cpu(void)
 {
@@ -12,9 +13,9 @@ cpu_t* new_cpu(void)
   if(rv != NULL)
   {
     memset(rv,0,sizeof(cpu_t));
-    rv->memory_start = malloc(MEMORY_SIZE);
-    rv->ip = rv->memory_start;
+    rv->ip = 0; // not sure where I actually wanna start tbh
   }
+  return rv;
 }
 
 int boot_from_floppy(cpu_t* cpu,FILE* floppy)
@@ -24,16 +25,16 @@ int boot_from_floppy(cpu_t* cpu,FILE* floppy)
     return -1;
   }
   // read the file into memory
-  fread(cpu->memory_start,1,MEMORY_SIZE,floppy);
+  fread(cpu->memory,MEMORY_SIZE,1,floppy);
   return ferror(floppy);
 }
 
+// keeping this in even though it's just an alias for free() at the moment
+// it may come in handy later, depending what happens to the cpu_t type
 void free_cpu(cpu_t* cpu)
 {
   if(cpu==NULL)
     return;
-  if(cpu->memory_start != NULL)
-    free(cpu->memory_start);
   free(cpu);
   return;
 }
@@ -48,11 +49,15 @@ void run(cpu_t* cpu)
 
 void step(cpu_t* cpu)
 {
-  switch(*cpu->ip)
+  switch(cpu->memory[cpu->ip])
   {
     // MOV family of instructions
     case 0xB8:
       mov(cpu);
+      break;
+    // XOR family
+    case 0x31:
+      xor(cpu);
       break;
     default:
       cpu->errno = EUNIMPLEMENTED;
@@ -66,35 +71,43 @@ void step(cpu_t* cpu)
 void dump_core(cpu_t cpu)
 {
   FILE* coredump = fopen("core.dmp","w");
-  unsigned int start_address = 0;
-  unsigned int i = 0;
+  //unsigned int start_address = 0;
+  //unsigned int i = 0;
   if(coredump == NULL)
   {
       fprintf(stderr,"Could not open core.dmp for writing.  No core dump written.\n");
       return;
   }
+  // binary version is more useful at the moment so we can do diffs against the floppy
+  fwrite(cpu.memory,MEMORY_SIZE,1,coredump);
+  /* ascii version
   #define BYTES_PER_LINE 16
-  while(start_address < MEMORY_SIZE-BYTES_PER_LINE)
+  while(start_address < (MEMORY_SIZE-BYTES_PER_LINE))
   {
+      i=0;
       fprintf(coredump,"%.8X: ",start_address);
       while(i<BYTES_PER_LINE)
       {
-          fprintf(coredump,"%.2X ",cpu.memory_start[start_address+i]);
+          fprintf(coredump,"%.2X ",cpu.memory[start_address+i]);
           i++;
       }
       fputc('\n',coredump);
       start_address += BYTES_PER_LINE;
   }
+  * */
 }
 
 void dump_state(cpu_t cpu)
 {
   printf("CPU state:\n");
+  printf("Instruction Information:\n");
+  printf("\tCurrent Instruction Pointer Address: %.4X.\n",cpu.ip);
+  printf("\tInstruction at that address: %.2X\n",cpu.memory[cpu.ip]);
   printf("Accumulators:\n");
-  printf("\tAX: {%.2X %.2X}\n",cpu.ax.h,cpu.ax.l);
-  printf("\tBX: {%.2X %.2X}\n",cpu.bx.h,cpu.bx.l);
-  printf("\tCX: {%.2X %.2X}\n",cpu.cx.h,cpu.cx.l);
-  printf("\tDX: {%.2X %.2X}\n",cpu.dx.h,cpu.dx.l);
+  printf("\tAX: {%.2X %.2X}\n",ACC_HI(cpu.ax),ACC_LO(cpu.ax));
+  printf("\tBX: {%.2X %.2X}\n",ACC_HI(cpu.bx),ACC_LO(cpu.bx));
+  printf("\tCX: {%.2X %.2X}\n",ACC_HI(cpu.cx),ACC_LO(cpu.cx));
+  printf("\tDX: {%.2X %.2X}\n",ACC_HI(cpu.dx),ACC_LO(cpu.dx));
   printf("Index Registers:\n");
   printf("\tSI: {%.4X}\n",cpu.si);
   printf("\tDI: {%.4X}\n",cpu.di);
@@ -110,10 +123,19 @@ void dump_state(cpu_t cpu)
   printf("\tInterrupt: %s\n", cpu.flags & 0x0200 ? "set" : "unset");
   printf("\tDirection: %s\n", cpu.flags & 0x0400 ? "set" : "unset");
   printf("\tOverflow: %s\n",  cpu.flags & 0x0800 ? "set" : "unset");
+  printf("Error Status:\n");
+  printf("\tError Number: %.4X\n",cpu.errno);
+  printf("\tError String: %s\n",err2str(cpu.errno));
   dump_core(cpu);
 }
 
-void err2str(uint16_t errnum)
+char* err2str(uint16_t errnum)
 {
-  
+  switch(errnum)
+  {
+      case 0xEE01:
+        return "Unimplemented opcode encountered.";
+      default:
+        return "Unknown (look up manually)";
+  }
 }
