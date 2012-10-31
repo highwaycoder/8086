@@ -5,7 +5,7 @@ LDFLAGS=
 PROGNAME=8086
 OBJS=loaders.o cpu.o
 
-$(PROGNAME): $(OBJS)
+$(PROGNAME): $(OBJS) main.c
 	$(LD) $(LDFLAGS) -o $(PROGNAME) main.c $(OBJS)
 
 loaders.o: loaders.c include/loaders.h include/cpu.h
