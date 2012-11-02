@@ -2,3 +2,5 @@
 architecture-notes
 *.o
 8086
+core.dmp
+.bochsrc
