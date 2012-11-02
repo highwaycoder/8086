@@ -4,7 +4,8 @@
 
 int main(int argc, char** argv)
 {
-	cpu_t* cpu = new_cpu();
+	FILE* bios_file = fopen("bios-bochs","r");
+	cpu_t* cpu = new_cpu(bios_file);
 	int rv = 0;
 	FILE* floppy = NULL;
 	if(cpu == NULL)

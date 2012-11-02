@@ -42,8 +42,10 @@ typedef struct CPU {
 	uint16_t es;
 	uint16_t ss;
 	
-	// instruction pointer, maximum amount of memory 
-	uint8_t ip;
+	// instruction pointer
+	// must be able to address at least 1MiB of memory 
+	// (must be at least 20 bits wide therefore)
+	unsigned int ip:20;
 	
 	// memory is now implemented as an array to protect it (does hurt the stack a bit though)
 	uint8_t memory[MEMORY_SIZE];
@@ -56,7 +58,7 @@ typedef struct CPU {
 } cpu_t;
 
 // functions
-cpu_t* new_cpu(void);
+cpu_t* new_cpu(FILE* bios_file);
 int boot_from_floppy(cpu_t* cpu,FILE* ramfile);
 void free_cpu(cpu_t* cpu);
 void run(cpu_t* cpu);

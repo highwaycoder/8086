@@ -7,13 +7,16 @@
 #include "errors.h"
 #include "bitwise.h"
 
-cpu_t* new_cpu(void)
+cpu_t* new_cpu(FILE* bios_file)
 {
   cpu_t* rv = malloc(sizeof(cpu_t));
   if(rv != NULL)
   {
     memset(rv,0,sizeof(cpu_t));
-    rv->ip = 0; // not sure where I actually wanna start tbh
+    // now read the BIOS into memory at 0xC0000 to 0xF0000
+    fread(rv->memory+0xC0000,0x20000,1,bios_file);
+    // now set the instruction pointer to start at the BIOS's start
+    rv->ip = 0xC0000;
   }
   return rv;
 }
