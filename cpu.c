@@ -46,11 +46,10 @@ void free_cpu(cpu_t* cpu)
 
 void run(cpu_t* cpu)
 {
-  while(cpu->power == ON && cpu->errno == ENONE)
+  do
   {
     ui_step(cpu);
-    step(cpu);
-  }
+  } while(cpu->power == ON && cpu->errno == ENONE);
 }
 
 void step(cpu_t* cpu)
@@ -132,31 +131,33 @@ void dump_state(cpu_t cpu)
   printf("\tOverflow: %s\n",  cpu.flags & 0x0800 ? "set" : "unset");
   printf("Error Status:\n");
   if(cpu.errno)
-    printf("\tError: %s\n",err2str(cpu.errno));
+  {
+    char* errstring = malloc(256);
+    err2str(errstring,cpu.errno);
+    printf("\tError: %s\n",errstring);
+    free(errstring);
+  }
   else
     printf("\tClear\n");
   dump_core(cpu);
 }
 
-char* err2str(uint16_t errnum)
+void err2str(char* string,uint16_t errnum)
 {
-  #define BIGGEST_STRING 46
-  char* rv = malloc(BIGGEST_STRING);
   switch(errnum)
   {
       case 0xB007:
-        sprintf(rv,"No boot medium found.");
+        sprintf(string,"No boot medium found.");
         break;
       case 0xEE01:
-        sprintf(rv,"Unimplemented opcode.");
+        sprintf(string,"Unimplemented opcode.");
         break;
       case 0x0000:
-        sprintf(rv,"Clear");
+        sprintf(string,"Clear");
         break;
       default:
       // maximum strlen here is 46, making this our biggest string
-        sprintf(rv,"Unknown (look up manually) (Error number:%.4X)",errnum);
+        sprintf(string,"Unknown (look up manually) (Error number:%.4X)",errnum);
         break;
   }
-  return rv;
 }

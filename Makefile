@@ -5,7 +5,7 @@ LDFLAGS :=-Xlinker --defsym -Xlinker BUILD_NUMBER=$$(cat build_number)
 LDFLAGS += -Xlinker --defsym -Xlinker BUILD_DATE=$$(date +'%Y%m%d')
 LDFLAGS += -Llib -lui
 PROGNAME=8086
-OBJS=main.o loaders.o cpu.o bitwise.o
+OBJS=main.o loaders.o cpu.o bitwise.o disasm.o
 
 # below are listed all the available frontends, the default is 'text'
 FRONTEND=text
@@ -29,9 +29,12 @@ cpu.o:cpu.c include/cpu.h include/loaders.h include/bitwise.h include/cpu.h incl
 bitwise.o: bitwise.c include/bitwise.h
 	$(CC) $(CFLAGS) -o bitwise.o -c bitwise.c
 
+disasm.o: disasm.c include/disasm.h
+	$(CC) $(CFLAGS) -o disasm.o -c disasm.c
+
 build_number: $(OBJS)
 	@if ! test -f build_number; then echo 0 > build_number; fi
-	@echo $$(($$(cat build_number)+1)) > build_number
+	echo $$(($$(cat build_number)+1)) > build_number
 
 lib:
 	mkdir -p lib

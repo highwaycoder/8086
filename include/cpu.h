@@ -65,6 +65,6 @@ void run(cpu_t* cpu);
 void step(cpu_t* cpu);
 void dump_core(cpu_t cpu);
 void dump_state(cpu_t cpu);
-char* err2str(uint16_t errnum);
+void err2str(char* string,uint16_t errnum);
 
 #endif
