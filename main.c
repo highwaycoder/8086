@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "cpu.h"
+#include "errors.h"
 
 int main(int argc, char** argv)
 {
@@ -21,6 +22,10 @@ int main(int argc, char** argv)
 	if(!rv)
 	{
 		run(cpu);
+	}
+	else
+	{
+		cpu->errno = ENO_BOOT_MEDIUM;
 	}
 	dump_state(*cpu);
 	free_cpu(cpu);

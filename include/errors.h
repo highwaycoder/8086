@@ -32,6 +32,9 @@ enum ERRORS {
 	EIP_OVERFLOW     = 0x0F10,
 	EIP_UNDERFLOW    = 0x0F11,
 	
+	// BIOS-related errors
+	ENO_BOOT_MEDIUM  = 0xB007,
+	
 	// misc
 	EBADOPCODE 		 = 0xBD0C,
 	

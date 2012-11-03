@@ -142,6 +142,9 @@ char* err2str(uint16_t errnum)
   char* rv = malloc(BIGGEST_STRING);
   switch(errnum)
   {
+      case 0xB007:
+        sprintf(rv,"No boot medium found.");
+        break;
       case 0xEE01:
         sprintf(rv,"Unimplemented opcode.");
         break;
