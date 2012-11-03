@@ -6,6 +6,7 @@
 #include "loaders.h"
 #include "errors.h"
 #include "bitwise.h"
+#include "instruction.h" // for instruction_length
 
 cpu_t* new_cpu(FILE* bios_file)
 {
@@ -47,6 +48,7 @@ void run(cpu_t* cpu)
 {
   while(cpu->power == ON && cpu->errno == ENONE)
   {
+    ui_step(cpu);
     step(cpu);
   }
 }

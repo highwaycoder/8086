@@ -11,6 +11,7 @@ int main(int argc, char** argv)
 	int rv = 0;
 	FILE* floppy = NULL;
 	print_copyright();
+	printf("\n");
 	if(cpu == NULL)
 	{
 		fprintf(stderr,"Couldn't init CPU.  Try again please.\n");
