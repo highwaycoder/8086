@@ -18,6 +18,7 @@ cpu_t* new_cpu(FILE* bios_file)
     // now set the instruction pointer to start at the BIOS's start
     rv->ip = 0xC0000;
   }
+  rv->power = ON;
   return rv;
 }
 
@@ -102,7 +103,8 @@ void dump_core(cpu_t cpu)
 
 void dump_state(cpu_t cpu)
 {
-  printf("CPU state:\n");
+  printf("CPU status:\n");
+  printf("\tPower: %s\n",cpu.power==ON?"on":"off");
   printf("Instruction Information:\n");
   printf("\tCurrent Instruction Pointer Address: %.4X.\n",cpu.ip);
   printf("\tInstruction at that address: %.2X\n",cpu.memory[cpu.ip]);
@@ -127,18 +129,29 @@ void dump_state(cpu_t cpu)
   printf("\tDirection: %s\n", cpu.flags & 0x0400 ? "set" : "unset");
   printf("\tOverflow: %s\n",  cpu.flags & 0x0800 ? "set" : "unset");
   printf("Error Status:\n");
-  printf("\tError Number: %.4X\n",cpu.errno);
-  printf("\tError String: %s\n",err2str(cpu.errno));
+  if(cpu.errno)
+    printf("\tError: %s\n",err2str(cpu.errno));
+  else
+    printf("\tClear\n");
   dump_core(cpu);
 }
 
 char* err2str(uint16_t errnum)
 {
+  #define BIGGEST_STRING 46
+  char* rv = malloc(BIGGEST_STRING);
   switch(errnum)
   {
       case 0xEE01:
-        return "Unimplemented opcode encountered.";
+        sprintf(rv,"Unimplemented opcode.");
+        break;
+      case 0x0000:
+        sprintf(rv,"Clear");
+        break;
       default:
-        return "Unknown (look up manually)";
+      // maximum strlen here is 46, making this our biggest string
+        sprintf(rv,"Unknown (look up manually) (Error number:%.4X)",errnum);
+        break;
   }
+  return rv;
 }
