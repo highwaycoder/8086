@@ -10,6 +10,7 @@ int main(int argc, char** argv)
 	cpu_t* cpu = new_cpu(bios_file);
 	int rv = 0;
 	FILE* floppy = NULL;
+	print_copyright();
 	if(cpu == NULL)
 	{
 		fprintf(stderr,"Couldn't init CPU.  Try again please.\n");
