@@ -18,12 +18,17 @@ void xor_modrm_reg16(cpu_t* cpu,uint8_t modrm,uint16_t src)
 	switch(modrm)
 	{
 		case 0xC0:
-		// apparently 0x31C0 is XOR ax,ax which makes sense but doesn't 
-		// agree with what I read in the Intel Software Developer's 
-		// Manual...
-			xor_reg16_reg16(&cpu->ax,cpu->ax);
+		// 0x31C0 is XOR ax,ax.  I think the 0x31 opcode is XOR reg,self
+		// ie "clear reg", so I'm going to write a function that does exactly that.
+			clear_reg(&cpu->ax);
 			break;
 	}
+}
+
+void clear_reg(uint16_t* dest)
+{
+	// equivalent to *dest ^= *dest but clearer
+	*dest = 0x0;
 }
 
 void xor_reg16_reg16(uint16_t* dest,uint16_t src)
