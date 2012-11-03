@@ -36,7 +36,11 @@ void ui_step(cpu_t* cpu)
 	prompt(*cpu);
 	getline(&command_buf,&line_size,stdin);
 	command_buf[strlen(command_buf)-1] = 0;
-	cmd = parse_command(command_buf);
+	
+	// this if statement mimics gdb's ability to remember your last command when you hit 'enter' without typing a command
+	if(strcmp(command_buf,"") != 0)
+		cmd = parse_command(command_buf);
+		
 	switch(cmd.parsed_command)
 	{
 		case COMMAND_QUIT:
