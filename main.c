@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "cpu.h"
 #include "errors.h"
+#include "config.h"
 
 int main(int argc, char** argv)
 {
@@ -17,6 +18,11 @@ int main(int argc, char** argv)
 	if(argc == 2)
 	{
 		floppy = fopen(argv[1],"r");
+	}
+	else
+	{
+		fprintf(stderr,USAGE);
+		return -1;
 	}
 	rv = boot_from_floppy(cpu,floppy);
 	if(!rv)
