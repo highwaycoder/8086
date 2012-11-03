@@ -8,7 +8,7 @@ OBJS=main.o loaders.o cpu.o bitwise.o
 $(PROGNAME): $(OBJS)
 	$(LD) $(LDFLAGS) -o $(PROGNAME) $(OBJS)
 
-main.o: main.c include/cpu.h
+main.o: main.c include/cpu.h config.h include/errors.h
 	$(CC) $(CFLAGS) -o main.o -c main.c
 
 loaders.o: loaders.c include/loaders.h include/cpu.h include/instruction.h
