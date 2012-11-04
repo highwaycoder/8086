@@ -18,6 +18,7 @@ static inline unsigned int instruction_length(opcode_t opcode)
         // opcodes with one operand (total instruction length==2)
         case 0x31: 
         case 0xB8:
+        case 0xBF:
             rv = 2;
             break;
         // opcodes with two operands (total instruction length==3)

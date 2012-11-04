@@ -9,10 +9,13 @@ void mov(cpu_t* cpu)
 	{
 		case 0xB8:
 			mov_reg16_imm(&(cpu->ax),cpu->memory[cpu->ip+1]);
-			cpu->ip += instruction_length(0xB8);
+			break;
+		case 0xBF:
+			mov_reg16_imm(&(cpu->di),cpu->memory[cpu->ip+1]);
 			break;
 	}
-	
+	// make sure to increment at the end
+	cpu->ip += instruction_length(cpu->memory[cpu->ip]);
 }
 
 void mov_reg16_imm(uint16_t* dest,uint16_t src)

@@ -12,6 +12,7 @@ typedef struct command_struct
 		COMMAND_UNKNOWN,
 		COMMAND_QUIT,
 		COMMAND_STEP,
+		COMMAND_INFO,
 	} parsed_command;
 	char* text;
 } command_t;
@@ -22,6 +23,8 @@ command_t commands[] = {
 	{COMMAND_QUIT,"exit"},
 	{COMMAND_STEP,"step"},
 	{COMMAND_STEP,"s"},
+	{COMMAND_INFO,"info"},
+	{COMMAND_INFO,"i"}
 };
 
 // functions specific to the text-based frontend
@@ -49,6 +52,9 @@ void ui_step(cpu_t* cpu)
 			break;
 		case COMMAND_STEP:
 			step(cpu);
+			break;
+		case COMMAND_INFO:
+			dump_state(*cpu);
 			break;
 		default:
 			printf("Unknown command: %s\n",command_buf);

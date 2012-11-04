@@ -58,6 +58,7 @@ void step(cpu_t* cpu)
   {
     // MOV family of instructions
     case 0xB8:
+    case 0xBF:
       mov(cpu);
       break;
     // XOR family
@@ -139,7 +140,6 @@ void dump_state(cpu_t cpu)
   }
   else
     printf("\tClear\n");
-  dump_core(cpu);
 }
 
 void err2str(char* string,uint16_t errnum)
