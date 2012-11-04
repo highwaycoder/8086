@@ -19,6 +19,15 @@ void mov(cpu_t* cpu)
 		case 0xBB:
 			mov_reg16_imm(&(cpu->bx),cpu->memory[cpu->ip+1]);
 			break;
+		case 0xBC:
+			mov_reg16_imm(&(cpu->sp),cpu->memory[cpu->ip+1]);
+			break;
+		case 0xBD:
+			mov_reg16_imm(&(cpu->bp),cpu->memory[cpu->ip+1]);
+			break;
+		case 0xBE:
+			mov_reg16_imm(&(cpu->si),cpu->memory[cpu->ip+1]);
+			break;
 		case 0xBF:
 			mov_reg16_imm(&(cpu->di),cpu->memory[cpu->ip+1]);
 			break;
