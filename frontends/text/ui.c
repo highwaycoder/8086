@@ -65,7 +65,7 @@ void ui_step(cpu_t* cpu)
 
 void prompt(cpu_t cpu)
 {
-	printf("[%.6X] %.2X\n>",cpu.ip,cpu.memory[cpu.ip]);
+	printf("[%.6X] Next Opcode: %.2X\n>",cpu.ip,cpu.memory[cpu.ip]);
 }
 
 command_t parse_command(char* command)

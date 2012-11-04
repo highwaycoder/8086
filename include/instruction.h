@@ -17,15 +17,11 @@ static inline unsigned int instruction_length(opcode_t opcode)
         
         // opcodes with one operand (total instruction length==2)
         case 0x31: 
-        case 0xB8:
-        case 0xBF:
+        case 0xB8 ... 0xBF:
+        default: // making the assumption that most instructions take one operand is probably dangerous, but oh well
             rv = 2;
             break;
         // opcodes with two operands (total instruction length==3)
-        default:
-            // making the assumption that most instructions take one operand is probably dangerous, but oh well
-            rv = 2;
-            break;
     }
     return rv;
 }
