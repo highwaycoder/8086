@@ -1,6 +1,6 @@
 CC=gcc
 LD=gcc
-CFLAGS=-fms-extensions -std=gnu99 -g -Wall -Wextra -pedantic -Iinclude -DVERSION=1.0
+CFLAGS=-fms-extensions -std=gnu99 -g -Wall -Wextra -Iinclude -DVERSION=1.0
 LDFLAGS :=-Xlinker --defsym -Xlinker BUILD_NUMBER=$$(cat build_number)
 LDFLAGS += -Xlinker --defsym -Xlinker BUILD_DATE=$$(date +'%Y%m%d')
 LDFLAGS += -Llib -lui

@@ -57,8 +57,7 @@ void step(cpu_t* cpu)
   switch(cpu->memory[cpu->ip])
   {
     // MOV family of instructions
-    case 0xB8:
-    case 0xBF:
+    case 0xB8 ... 0xBF:
       mov(cpu);
       break;
     // XOR family
